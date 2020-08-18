@@ -70,7 +70,7 @@ import { baseURL } from './shared/baseurl';
     ReactiveFormsModule,
     MatProgressSpinnerModule,
     MatSliderModule,
-    HttpClientModule
+    HttpClientModule,
   ],
   providers: [
     DishService, 
