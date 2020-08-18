@@ -6,7 +6,7 @@
     fxLayoutGap="10px" 
     fxLayoutGap.xs="0">
 
-    <div fxFlex="40" *ngIf="dish">
+    <div fxFlex="40" *ngIf="dish" [@visibility]="visibility" [@expand]>
         <mat-card>
             <mat-card-header>
                 <mat-card-title>
@@ -31,7 +31,7 @@
         </div>
     </div>
 
-    <div fxFlex="40" *ngIf="dish">
+    <div fxFlex="40" *ngIf="dish" [@visibility]="visibility"  [@expand]>
         <mat-card>
             <mat-card-header>
                 <mat-card-title>
@@ -64,7 +64,7 @@
                     <mat-slider [displayWith]="formatLabel" thumbLabel tickInterval="1000" min="1" max="5" formControlName="rating"></mat-slider>
                     <br>
                     <mat-form-field>
-                        <textarea matInput formControlName="comment" placeholder="Your Comment" rows=12 required></textarea>
+                        <textarea matInput formControlName="comment" placeholder="Your Comment" rows=5 required></textarea>
                         <mat-error *ngIf="commentForm.controls.comment.errors?.required">Comment is required</mat-error>
                     </mat-form-field>
                     <br>

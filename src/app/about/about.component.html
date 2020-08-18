@@ -9,7 +9,7 @@ fxLayoutGap="10px">
   </div>
 </div>
 
-<div fxFlex>
+<div fxFlex [@visibility]="visibility"  [@expand]>
   <div fxLayout="column" fxLayout.gt-sm="row">
     <div fxFlex="70">
       <h2>Our History</h2>
@@ -58,7 +58,7 @@ fxLayoutGap="10px">
      fxLayout="column"
      fxLayoutGap="10px">
   <h2>Corporate Leadership</h2>
-  <mat-list fxFlex>
+  <mat-list fxFlex  [@visibility]="visibility"  [@expand]>
     <mat-list-item *ngFor="let leader of leaders">
       <img matListAvatar src="{{ BaseURL + leader.image}}" alt={{leader.name}}>
       <h1 matLine> {{leader.name}} </h1>
