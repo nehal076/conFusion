@@ -33,8 +33,10 @@ export class DishdetailComponent implements OnInit {
   next: string;
   commentForm: FormGroup;
   errMess: string;
+  dishcopy: Dish;
+  comment: Comment;
 
-  constructor(private dishservice: DishService,
+  constructor(private dishService: DishService,
     private route: ActivatedRoute,
     private location: Location,
     private fb: FormBuilder,
@@ -43,10 +45,11 @@ export class DishdetailComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.dishservice.getDishIds().subscribe(dishIds => this.dishIds = dishIds,
+    this.dishService.getDishIds().subscribe(dishIds => this.dishIds = dishIds,
         errmess => this.errMess = <any>errmess);
-    this.route.params.pipe(switchMap((params: Params) => this.dishservice.getDish(params['id'])))
-    .subscribe(dish => { this.dish = dish; this.setPrevNext(dish.id) }, errmess => this.errMess = <any>errmess);
+    this.route.params.pipe(switchMap((params: Params) => this.dishService.getDish(params['id'])))
+        .subscribe(dish => { this.dish = dish; this.dishcopy = dish; this.setPrevNext(dish.id); },
+          errmess => this.errMess = <any>errmess );
   }
 
   createForm() {
@@ -101,17 +104,19 @@ export class DishdetailComponent implements OnInit {
   }
 
   onSubmit() {
-    console.log(this.dish.comments)
-    let newComment = new Comment();
-    newComment.author = this.commentForm.get('name').value;
-    newComment.rating = this.commentForm.get('rating').value;
-    newComment.comment = this.commentForm.get('comment').value;
-    newComment.date = new Date()+'';
-    this.dish.comments.push(newComment)
+    this.comment = this.commentForm.value;
+    this.comment.date = new Date().toISOString();
+    //this.dish.comments.push(this.comment)
+    this.dishcopy.comments.push(this.comment);
+    this.dishService.putDish(this.dishcopy).subscribe(dish => {
+        this.dish = dish; this.dishcopy = dish;
+      },
+      errmess => { this.dish = null; this.dishcopy = null; this.errMess = <any>errmess; 
+    });
     this.commentForm.reset({
       name: '',
       rating: 5,
       comment: ''
-    });    
+    });
   }
 }
