@@ -1,7 +1,7 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { Leader } from '../shared/leader';
 import { LeaderService } from '../services/leader.service';
-import { visibility,flyInOut, expand } from '../animations/app.animation';
+import { visibility, flyInOut, expand } from '../animations/app.animation';
 
 @Component({
   selector: 'app-about',
@@ -21,6 +21,7 @@ export class AboutComponent implements OnInit {
 
   leaders: Leader[];
   errMess: string;
+  visibility = 'shown';
 
   ngOnInit() {
     this.leaderService.getLeaders().subscribe(leaders => this.leaders = leaders,

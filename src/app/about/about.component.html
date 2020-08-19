@@ -63,6 +63,9 @@ fxLayoutGap="10px">
       <img matListAvatar src="{{ BaseURL + leader.image}}" alt={{leader.name}}>
       <h1 matLine> {{leader.name}} </h1>
       <p matLine>
+        <span> -- {{leader.designation}} ({{leader.abbr}})  </span>
+      </p>
+      <p matLine>
         <span> {{leader.description}} </span>
       </p>
     </mat-list-item>
