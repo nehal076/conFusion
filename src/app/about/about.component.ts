@@ -24,8 +24,7 @@ export class AboutComponent implements OnInit {
   visibility = 'shown';
 
   ngOnInit() {
-    this.leaderService.getLeaders().subscribe(leaders => this.leaders = leaders,
-      errmess => this.errMess = <any>errmess);
+    this.leaders = this.leaderService.getLeaders();
   }
 
 }
