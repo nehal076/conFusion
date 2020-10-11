@@ -16,22 +16,25 @@ export class DishService {
   constructor(private http: HttpClient,
     private processHTTPMsgService: ProcessHTTPMsgService) { }
 
-  getDishes(): Dish[] {
-    return DISHES;
+
+  getDishes(): Observable<Dish[]> {
+    return this.http.get<Dish[]>(baseURL + 'dishes')
+      .pipe(catchError(this.processHTTPMsgService.handleError));
   }
 
   getDish(id: string): Observable<Dish> {
-    return of(DISHES.filter((dish) => (dish._id === id))[0]);
+    return this.http.get<Dish>(baseURL + 'dishes/' + id)
+      .pipe(catchError(this.processHTTPMsgService.handleError));
   }
 
-
-
-  getFeaturedDish(): Dish {
-    return DISHES.filter((dish) => dish.featured)[0];
+  getFeaturedDish(): Observable<Dish | any> {
+    return this.http.get<Dish[]>(baseURL + 'dishes?featured=true').pipe(map(dishes => dishes[0]))
+      .pipe(catchError(this.processHTTPMsgService.handleError));
   }
 
-  getDishIds(): Observable<string[] | any> {
-    return of(DISHES.map(dish => dish._id ));
+  getDishIds(): Observable<number[] | any> {
+    return this.getDishes().pipe(map(dishes => dishes.map(dish => dish._id)))
+      .pipe(catchError(error => error));
   }
 
   putDish(dish: Dish): Observable<Dish> {
