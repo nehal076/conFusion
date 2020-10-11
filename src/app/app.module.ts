@@ -36,9 +36,15 @@ import { DishService } from './services/dish.service';
 import { PromotionService } from './services/promotion.service';
 import { LeaderService } from './services/leader.service';
 import { ProcessHTTPMsgService } from './services/process-httpmsg.service';
+import { AuthService } from './services/auth.service';
+import { AuthInterceptor, UnauthorizedInterceptor } from './services/auth.interceptor';
+import { FavoriteService } from './services/favorite.service';
+import { AuthGuardService } from './services/auth-guard.service';
 
 import { baseURL } from './shared/baseurl';
 import { HighlightDirective } from './directives/highlight.directive';
+import { FavoritesComponent } from './favorites/favorites.component';
+import {HTTP_INTERCEPTORS} from '@angular/common/http';import { FeedbackService } from './services/feedback.service';
 
 @NgModule({
   declarations: [
@@ -51,7 +57,8 @@ import { HighlightDirective } from './directives/highlight.directive';
     HomeComponent,
     ContactComponent,
     LoginComponent,
-    HighlightDirective
+    HighlightDirective,
+    FavoritesComponent
   ],
   imports: [
     BrowserModule,
@@ -80,7 +87,24 @@ import { HighlightDirective } from './directives/highlight.directive';
     PromotionService, 
     LeaderService,
     ProcessHTTPMsgService,
-    { provide: 'BaseURL', useValue: baseURL }
+    { provide: 'BaseURL', useValue: baseURL },
+    FeedbackService,
+    AuthService,
+    AuthGuardService,
+    FavoriteService,
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptor,
+      multi: true
+    },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: UnauthorizedInterceptor,
+      multi: true
+    }
+  ],
+  entryComponents: [
+    LoginComponent
   ],
   bootstrap: [AppComponent],
 })

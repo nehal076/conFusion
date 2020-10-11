@@ -21,7 +21,7 @@ export class DishService {
   }
 
   getDish(id: string): Observable<Dish> {
-    return of(DISHES.filter((dish) => (dish.id === id))[0]);
+    return of(DISHES.filter((dish) => (dish._id === id))[0]);
   }
 
 
@@ -31,7 +31,7 @@ export class DishService {
   }
 
   getDishIds(): Observable<string[] | any> {
-    return of(DISHES.map(dish => dish.id ));
+    return of(DISHES.map(dish => dish._id ));
   }
 
   putDish(dish: Dish): Observable<Dish> {
@@ -40,8 +40,14 @@ export class DishService {
         'Content-Type':  'application/json'
       })
     };
-    return this.http.put<Dish>(baseURL + 'dishes/' + dish.id, dish, httpOptions)
+    return this.http.put<Dish>(baseURL + 'dishes/' + dish._id, dish, httpOptions)
       .pipe(catchError(this.processHTTPMsgService.handleError));
 
+  }
+
+  postComment(dishId: string, comment: any) {
+    console.log(comment)
+    return this.http.post(baseURL + 'dishes/' + dishId + '/comments', comment)
+    .pipe(catchError(this.processHTTPMsgService.handleError));
   }
 }
