@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, OnInit, Inject, ViewChild } from '@angular/core';
 import { Dish } from '../shared/dish';
 import { DishService } from '../services/dish.service';
 
@@ -9,6 +9,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Comment } from '../shared/comment';
 
 import { visibility,flyInOut, expand } from '../animations/app.animation';
+import { FavoriteService } from '../services/favorite.service';
 
 @Component({
   selector: 'app-dishdetail',
@@ -22,8 +23,6 @@ import { visibility,flyInOut, expand } from '../animations/app.animation';
 })
 export class DishdetailComponent implements OnInit {
 
-  visibility = 'shown';
-
   formErrors = {
     'name': '',
   };
@@ -36,6 +35,7 @@ export class DishdetailComponent implements OnInit {
     },
   };
 
+  @ViewChild('cform') commentFormDirective;
   dish: Dish;
   dishIds: string[];
   prev: string;
@@ -44,34 +44,35 @@ export class DishdetailComponent implements OnInit {
   errMess: string;
   dishcopy: Dish;
   comment: Comment;
+  visibility = 'shown';
+  favorite = false;
 
   constructor(private dishService: DishService,
+    private favoriteService: FavoriteService,
     private route: ActivatedRoute,
     private location: Location,
     private fb: FormBuilder,
-    @Inject('BaseURL') private BaseURL) { 
-      this.createForm();
-  }
+    @Inject('BaseURL') private BaseURL) { }
 
   ngOnInit() {
-    this.dishService.getDishIds().subscribe(dishIds => this.dishIds = dishIds,
-        errmess => this.errMess = <any>errmess);
+    this.createForm();
 
-    this.route.params.pipe(switchMap((params: Params) => { 
-      this.visibility = 'hidden'; 
-      return this.dishService.getDish(params['id']); 
-    })).subscribe(dish => { 
-      this.dish = dish; 
-      this.dishcopy = dish; 
-      this.setPrevNext(dish.id); 
+    this.dishService.getDishIds().subscribe(dishIds => this.dishIds = dishIds);
+
+    this.route.params.pipe(switchMap((params: Params) => { this.visibility = 'hidden'; return this.dishService.getDish(params['id']); }))
+    .subscribe(dish => {
+      this.dish = dish;
+      this.setPrevNext(dish._id);
       this.visibility = 'shown';
+      this.favoriteService.isFavorite(this.dish._id)
+      .subscribe(resp => { console.log(resp); this.favorite = <boolean>resp.exists; },
+          err => console.log(err));
     },
-    errmess => this.errMess = <any>errmess 
-  )};
+    errmess => this.errMess = <any>errmess);
+  };
 
   createForm() {
     this.commentForm = this.fb.group({
-      name: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(25)]] ,
       rating: [5, [Validators.required]],
       comment: ['', [Validators.required]]
     });
@@ -121,19 +122,19 @@ export class DishdetailComponent implements OnInit {
   }
 
   onSubmit() {
-    this.comment = this.commentForm.value;
-    this.comment.date = new Date().toISOString();
-    //this.dish.comments.push(this.comment)
-    this.dishcopy.comments.push(this.comment);
-    this.dishService.putDish(this.dishcopy).subscribe(dish => {
-        this.dish = dish; this.dishcopy = dish;
-      },
-      errmess => { this.dish = null; this.dishcopy = null; this.errMess = <any>errmess; 
-    });
+    this.dishService.postComment(this.dish._id, this.commentForm.value)
+      .subscribe(dish => this.dish = <Dish>dish);
+    this.commentFormDirective.resetForm();
     this.commentForm.reset({
-      name: '',
       rating: 5,
       comment: ''
     });
+  }
+
+  addToFavorites() {
+    if (!this.favorite) {
+      this.favoriteService.postFavorite(this.dish._id)
+        .subscribe(favorites => { console.log(favorites); this.favorite = true; });
+    }
   }
 }
