@@ -14,7 +14,16 @@ import { FavoriteService } from '../services/favorite.service';
 @Component({
   selector: 'app-dishdetail',
   templateUrl: './dishdetail.component.html',
-  styleUrls: ['./dishdetail.component.scss']
+  styleUrls: ['./dishdetail.component.scss'],
+  host: {
+    '[@flyInOut]': 'true',
+    'style': 'display: block;'
+  },
+  animations: [
+    visibility(),
+    flyInOut(),
+    expand()
+  ]
 })
 export class DishdetailComponent implements OnInit {
 
