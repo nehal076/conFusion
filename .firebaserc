@@ -1,0 +1,14 @@
+{
+  "targets": {
+    "confusion-9a79f": {
+      "hosting": {
+        "conFusion": [
+          "confusion-9a79f"
+        ]
+      }
+    }
+  },
+  "projects": {
+    "default": "confusion-9a79f"
+  }
+}

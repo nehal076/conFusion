@@ -14,12 +14,7 @@ import { FavoriteService } from '../services/favorite.service';
 @Component({
   selector: 'app-dishdetail',
   templateUrl: './dishdetail.component.html',
-  styleUrls: ['./dishdetail.component.scss'],
-  animations: [
-    visibility(),
-    flyInOut(),
-    expand()
-  ]
+  styleUrls: ['./dishdetail.component.scss']
 })
 export class DishdetailComponent implements OnInit {
 
@@ -128,7 +123,7 @@ export class DishdetailComponent implements OnInit {
     this.commentForm.reset({
       rating: 5,
       comment: ''
-    });
+    });    
   }
 
   addToFavorites() {
